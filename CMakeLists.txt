@@ -60,7 +60,7 @@ if (VL_COMPILER_IS_GCC OR VL_COMPILER_IS_CLANG)
 	target_compile_options(vlfeat PRIVATE -Wno-unused-function -Wno-long-long 
 	                                      -Wno-variadic-macros -Wall -Wextra)
 	target_compile_options(vlfeat PRIVATE -std=c99 -fvisibility=hidden)
-	target_link_libraries(vlfeat m)
+	target_link_libraries(vlfeat PUBLIC m)
 elseif(VL_COMPILER_IS_MSVC)
 
 endif()
@@ -101,22 +101,18 @@ if (DISABLE_OPENMP OR NOT OPENMP_FOUND)
     endif()
 elseif(OPENMP_FOUND)
 	message(STATUS "VL - OpenMP: Enabled")
-	target_compile_options(vlfeat ${OpenMP_C_FLAGS})
-	target_link_libraries(vlfeat PRIVATE ${OpenMP_EXE_LINKER_FLAGS})
+	target_compile_options(vlfeat PUBLIC ${OpenMP_C_FLAGS})
+	target_link_libraries(vlfeat PUBLIC ${OpenMP_C_FLAGS})
 endif()
 
 if (APPLE)
 	set_target_properties(vlfeat PROPERTIES LINK_FLAGS "-undefined suppress -flat_namespace -compatibility_version ${VLFEAT_VERSION} -current_version ${VLFEAT_VERSION}")
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-	target_compile_definitions(vlfeat -D_GNU_SOURCE)
+elseif(${CMAKE_SYSTEM_NAME} MATCHES ".*Linux.*")
+	target_compile_definitions(vlfeat PRIVATE -D_GNU_SOURCE)
 	target_compile_options(vlfeat PRIVATE -fno-stack-protector)
 endif()
 
-
 # Executables/Tests
-
-set(VL_EXE_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
-
 AddExe(aib)
 AddExe(mser)
 AddExe(sift)
