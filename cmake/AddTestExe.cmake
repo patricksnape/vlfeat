@@ -1,0 +1,6 @@
+macro(AddTestExe exe_name)
+   add_executable(test_${exe_name} ${VL_EXE_SRC_DIR}/test_${exe_name}.c)
+   target_link_libraries(test_${exe_name} vlfeat)
+   target_include_directories(test_${exe_name} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+   add_test(${exe_name} test_${exe_name})
+endmacro()
